@@ -15,9 +15,6 @@ module CrystalJoystick
 
       def poll
         SDL2.joystickUpdate
-        # while SDL2.pollEvent(out event) == 1
-        #   yield event
-        # end
       end
 
       def num_joysticks
