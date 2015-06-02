@@ -257,7 +257,7 @@ lib SDL2
 
   type EventFilter = (Void*, Event*) -> Int32
 
-  enum PS3# : UInt8
+  enum PS3 : UInt8
     J0
     J1 = 2
     Start = 3

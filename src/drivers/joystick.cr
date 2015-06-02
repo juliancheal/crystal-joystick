@@ -1,3 +1,5 @@
+require "./macosx_binding_map"
+
 module CrystalJoystick
   module Drivers
     # The sdl-joystick driver behaviors
@@ -5,15 +7,16 @@ module CrystalJoystick
 
       getter connection
       getter running
+      getter button_values
 
       def initialize(connection)
         @connection = connection
         @running = true
+        @button_values = {} of Int32 => UInt8
       end
 
       # Start driver and any required connections
       def start_driver(interval)
-        # @button_values = {}
         while @running
           every(interval) do
             handle_message_events
@@ -22,21 +25,19 @@ module CrystalJoystick
       end
 
       def every(interval, &block)
-        # sleep(interval)
+        sleep(interval)
         block.call
       end
 
       def currently_pressed?(b)
-        button_values[b]
+        if button_map.has_value?(b)
+          button_values[button_map.key(b)]
+        end
       end
 
       def handle_message_events
-        @connection.poll do |event|
-        # handle_joystick
-        # TODO: handle_trackball
-        # TODO: handle_hats
-          handle_buttons(event)
-        end
+        @connection.poll
+        handle_buttons
       end
 
       # def handle_joystick
@@ -58,20 +59,24 @@ module CrystalJoystick
       #   end
       # end
 
-      def handle_buttons(event)
-        case event.type
-          when SDL2::EventType::JOYBUTTONDOWN,SDL2::EventType::JOYBUTTONUP
-            puts "Button #{event.jbutton.button}, Event #{event.type}"
-          when SDL2::EventType::QUIT
-            @running = false
-        end
-        # connection.num_buttons.times {|b|
-        #   currently_pressed = connection.button(b)
-        #   if button_values[b] != currently_pressed
-        #     button_values[b] = currently_pressed
-        #     publish_button(b)
-        #   end
-        # }
+      def handle_buttons
+        connection.num_buttons.times {|b|
+          currently_pressed = connection.button(b)
+          begin
+            if @button_values[b] != currently_pressed
+              @button_values[b] = currently_pressed
+              publish_button(b)
+            end
+	        rescue ex
+            # ¯\_(ツ)_/¯
+            @button_values[b] = currently_pressed
+            publish_button(b)
+          end
+        }
+      end
+
+      def button_map(value)
+        BINDING_MAP[:ps3][:button_map][value]
       end
 
       # def publish_joystick(s, x, y)
@@ -80,13 +85,13 @@ module CrystalJoystick
       #   publish(event_topic_name("joystick_#{s}"), {:x => x, :y => y})
       # end
       #
-      # def publish_button(b)
-      #   if button_values[b] == 1
-      #     publish(event_topic_name("update"), "button", b)
-      #     publish(event_topic_name("button"), b)
-      #     publish(event_topic_name("button_#{b}"))
-      #   end
-      # end
+      def publish_button(b)
+        if @button_values[b] == 1
+          puts "Button_#{button_map(b)} is currently pressed"
+        else
+          # puts "Button_#{button_map(b)} is released"
+        end
+      end
     end
   end
 end
