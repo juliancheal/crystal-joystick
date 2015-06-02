@@ -258,8 +258,8 @@ lib SDL2
 
   type EventFilter = (Void*, Event*) -> Int32
 
-  enum PS3 : UInt8
-    J0 = 1
+  enum PS3# : UInt8
+    J0
     J1 = 2
     Start = 3
     Dpad_up = 4
@@ -272,12 +272,10 @@ lib SDL2
     R1 = 11
     Triangle = 12
     Circle = 13
-    X = 14
+    X
     Square = 15
     Ps3 = 16
   end
-
-  fun button_value(value : PS3)
 end
 # module Joystick
 # end
