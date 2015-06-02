@@ -1,38 +1,60 @@
-module Joystick
+module CrystalJoystick
   module Adaptors
-#     class Joystick
-      @[Link("SDL2")]
-      lib SDL2
+    class Joystick
+      def connect
+        SDL2.init(SDL2::Init::EVERYTHING)
 
-        fun init = SDL_Init(flags : Init) : Int32
+        raise "No SDL joystick available" if SDL2.numJoysticks == 0
 
-        fun numJoysticks = SDL_NumJoysticks
-        fun joystickName = SDL_JoystickName
-        fun joystickOpen = SDL_JoystickOpen
-        fun joystickOpened = SDL_JoystickOpened
-        fun joystickIndex = SDL_JoystickIndex
-        fun joystickNumAxes = SDL_JoystickNumAxes
-        fun joystickNumBalls = SDL_JoystickNumBalls
-        fun joystickNumHats = SDL_JoystickNumHats
-        fun joystickNumButtons = SDL_JoystickNumButtons
-        fun joystickUpdate = SDL_JoystickUpdate
-        fun joystickGetAxis = SDL_JoystickGetAxis
-        fun joystickGetHat = SDL_JoystickGetHat
-        fun joystickGetButton = SDL_JoystickGetButton
-        fun joystickGetBall = SDL_JoystickGetBall
-        fun joystickClose = SDL_JoystickClose
+        @joystick = SDL2.joystickOpen(0) # TODO: allow user to choose which joystick
+      end
 
-        # ENUMS
-        @[Flags]
-        enum Init : UInt32
-          Timer          = 0x00000001
-          Joystick       = 0x00000200
-          Haptic         = 0x00001000
-          GameController = 0x00002000
-          Events         = 0x00004000
-          Everything     = Timer | Audio | Video | Events | Joystick | Haptic | GameController
+      def firmware_name
+        SDL2.joystickName(@joystick)
+      end
+
+      def poll
+        while SDL2.pollEvent(out event) == 1
+          yield event
         end
       end
-#     end
+
+      def num_joysticks
+        SDL2.numJoysticks
+      end
+
+      def num_axes
+        SDL2.joystickNumAxes(@joystick)
+      end
+
+      def axis(n)
+        SDL2.joystickGetAxis(@joystick, n)
+      end
+
+      def num_balls
+        SDL2.joystickNumBalls(@joystick)
+      end
+
+      def ball(n)
+        SDL2.joystickGetBall(@joystick, n)
+      end
+
+      def num_hats
+        SDL2.joystickNumHats(@joystick)
+      end
+
+      def hat(n)
+        SDL2.joystickGetHat(@joystick, n)
+      end
+
+      def num_buttons
+        SDL2.joystickNumButtons(@joystick)
+      end
+
+      def button(n)
+        SDL2.joystickGetButton(@joystick, n)
+      end
+
+    end
   end
 end

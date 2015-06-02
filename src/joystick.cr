@@ -1,4 +1,5 @@
-require "./*"
+require "./adaptors/joystick"
+require "./drivers/joystick"
 
 @[Link("SDL2")]
 lib SDL2
@@ -12,14 +13,14 @@ lib SDL2
   fun joystickClose = SDL_JoystickClose()
 	fun joystickEventState = SDL_JoystickEventState(state : Int32) : Int32
 	fun joystickGetAttached = SDL_JoystickGetAttached(joystick : Joystick*) : Bool
-	fun joystickGetAxis = SDL_JoystickGetAxis()
-	fun joystickGetBall = SDL_JoystickGetBall()
-	fun joystickGetButton = SDL_JoystickGetButton()
+	fun joystickGetAxis = SDL_JoystickGetAxis(joystick : Joystick*, axis : Int32) : Int16
+	fun joystickGetBall = SDL_JoystickGetBall(joystick : Joystick*, ball : Int32, dx : Int32*, dy : Int32*) : Int32
+	fun joystickGetButton = SDL_JoystickGetButton(joystick : Joystick*, button : Int32) : UInt8
 	fun joystickGetDeviceGUID = SDL_JoystickGetDeviceGUID(device_index : Int32) : JoystickGUID
 	fun joystickGetGUID = SDL_JoystickGetGUID(joystick : Joystick*) : JoystickGUID
 	fun joystickGetGUIDFromString = SDL_JoystickGetGUIDFromString()
 	fun joystickGetGUIDString = SDL_JoystickGetGUIDString()
-	fun joystickGetHat = SDL_JoystickGetHat()
+	fun joystickGetHat = SDL_JoystickGetHat(joystick : Joystick*, hat : Int32) : UInt8
 	fun joystickInstanceID = SDL_JoystickInstanceID(joystick : Joystick*) : JoystickID
 	fun joystickIsHaptic = SDL_JoystickIsHaptic()
 	fun joystickName = SDL_JoystickName(joystick : Joystick*) : UInt8*
@@ -28,9 +29,7 @@ lib SDL2
 	fun joystickNumBalls = SDL_JoystickNumBalls(joystick : Joystick*) : Int32
 	fun joystickNumHats = SDL_JoystickNumHats(joystick : Joystick*) : Int32
   fun joystickNumButtons = SDL_JoystickNumButtons(joystick : Joystick*) : Int32
-	fun joystickUpdate = SDL_JoystickUpdate()
-
-  fun joystick_event_state = SDL_JoystickEventState(state : Int32) : Int32
+	fun joystickUpdate = SDL_JoystickUpdate() : Void
 
   fun pollEvent = SDL_PollEvent(event : Event*) : Int32
 	fun wait_event = SDL_WaitEvent(event : Event*) : Int32
@@ -277,27 +276,3 @@ lib SDL2
     Ps3 = 16
   end
 end
-# module Joystick
-# end
-
-# fun gameControllerAddMapping = SDL_GameControllerAddMapping()
-# fun gameControllerAddMappingsFromFile = SDL_GameControllerAddMappingsFromFile()
-# fun gameControllerAddMappingsFromRW = SDL_GameControllerAddMappingsFromRW()
-# fun gameControllerClose = SDL_GameControllerClose()
-# fun gameControllerEventState = SDL_GameControllerEventState()
-# fun gameControllerGetAttached = SDL_GameControllerGetAttached()
-# fun gameControllerGetAxis = SDL_GameControllerGetAxis()
-# fun gameControllerGetAxisFromString = SDL_GameControllerGetAxisFromString()
-# fun gameControllerGetBindForAxis = SDL_GameControllerGetBindForAxis()
-# fun gameControllerGetBindForButton = SDL_GameControllerGetBindForButton()
-# fun gameControllerGetButton = SDL_GameControllerGetButton()
-# fun gameControllerGetButtonFromString = SDL_GameControllerGetButtonFromString()
-# fun gameControllerGetJoystick = SDL_GameControllerGetJoystick()
-# fun gameControllerGetStringForAxis = SDL_GameControllerGetStringForAxis()
-# fun gameControllerGetStringForButton = SDL_GameControllerGetStringForButton()
-# fun gameControllerMapping = SDL_GameControllerMapping()
-# fun gameControllerMappingForGUID = SDL_GameControllerMappingForGUID()
-# fun gameControllerName = SDL_GameControllerName()
-# fun gameControllerNameForIndex = SDL_GameControllerNameForIndex()
-# fun gameControllerOpen = SDL_GameControllerOpen()
-# fun gameControllerUpdate = SDL_GameControllerUpdate()
